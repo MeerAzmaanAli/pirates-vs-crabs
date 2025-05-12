@@ -1,4 +1,4 @@
-import Phaser from 'phaser';
+import * as Phaser from 'https://cdn.jsdelivr.net/npm/phaser@3.70.0/dist/phaser.esm.js';
 
 import BootScene from './src/scenes/BootScene.js';
 import GameScene from './src/scenes/GameScene.js';
@@ -25,6 +25,6 @@ const config = {
       gravity: { y: 0 }
     }
   },
-  scene: [BootScene,MainMenuScene, LevelSelectScene, GameScene,GameOverScene,LevelCompleteScene],
+  scene: [BootScene, MainMenuScene, LevelSelectScene, GameScene,GameOverScene,LevelCompleteScene],
 };
 new Phaser.Game(config);
