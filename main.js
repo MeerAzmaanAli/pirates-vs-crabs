@@ -1,11 +1,11 @@
 import Phaser from 'phaser';
 
-import BootScene from './scenes/BootScene.js';
-import GameScene from './scenes/GameScene.js';
-import MainMenuScene from './scenes/MainMenuScene.js';
-import LevelSelectScene from './scenes/LevelSelectScene.js';
-import GameOverScene from './scenes/GameOverScene.js';
-import LevelCompleteScene from './scenes/LevelCompleteScene.js';
+import BootScene from './src/scenes/BootScene.js';
+import GameScene from './src/scenes/GameScene.js';
+import MainMenuScene from './src/scenes/MainMenuScene.js';
+import LevelSelectScene from './src/scenes/LevelSelectScene.js';
+import GameOverScene from './src/scenes/GameOverScene.js';
+import LevelCompleteScene from './src/scenes/LevelCompleteScene.js';
 
 
 const config = {
