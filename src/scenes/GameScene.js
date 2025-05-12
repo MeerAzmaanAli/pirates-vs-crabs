@@ -25,44 +25,77 @@ export default class GameScene extends Phaser.Scene {
         this.crabs = [];
         this.piratebulletsInstances=[];
         this.waveTimers = {
-        easy: 20000,    // 20 seconds easy wave
-        medium: 30000,  // 20 seconds medium wave
-        hard: 30000     // 10 seconds hard wave
+        easy: 30000,    // 30 seconds easy wave
+        medium: 30000,  // 30 seconds medium wave
+        hard: 30000     // 30 seconds hard wave
         };
 
         this.waveOrder = ['easy', 'medium', 'hard']; // Sequence of waves
         this.currentWaveIndex = 0;
       }
 
+  init(data) {
+    this.currentLevel = data.level || 1;
+    
+    // Initialize empty collections first
+    this.crabs = new Map();
+    this.piratesInstances = [];
+    this.piratebulletsInstances = [];
+    this.crabbulletsInstances = [];
+    
+    // Set level configuration
+    this.setLevelConfig();
+
+    // Reset game state 
+    this.resetGameState();
+  }
+
+  setLevelConfig() {
+    // Set level-specific configurations
+    switch(this.currentLevel) {
+        case 1:
+            this.availablePirates = ['harpoonPirate'];
+            this.availableCrabs = ['normal'];
+            this.waveOrder = ['easy'];
+            this.waveTimers = { easy: 30000 };
+            break;
+        case 2:
+            this.availablePirates = ['harpoonPirate', 'hidingPirate'];
+            this.availableCrabs = ['normal', 'armoured'];
+            this.waveOrder = ['easy', 'medium'];
+            this.waveTimers = { easy: 30000, medium: 30000 };
+            break;
+        case 3:
+            this.availablePirates = ['harpoonPirate', 'hidingPirate', 'cannonPirate'];
+            this.availableCrabs = ['normal', 'armoured', 'octopus'];
+            this.waveOrder = ['easy', 'medium', 'hard'];
+            this.waveTimers = { easy: 20000, medium: 30000, hard: 30000 };
+            break;
+    }
+  }
+
   create() {
+    // Initialize physics groups first
+    this.pirateSprites = this.physics.add.group();
+    this.piratebulletSprites = this.physics.add.group();
+    this.crabbulletSprites = this.physics.add.group();
+    
+    // Set up collisions
+    this.physics.add.collider(this.pirateSprites, null, this.handleCollision, null, this);
+    this.physics.add.collider(this.piratebulletSprites, null, this.handlePirateBulletHit, null, this);
+    this.physics.add.collider(this.crabbulletSprites, null, this.handleCrabBulletHit, null, this);
+
+    // Create UI and game elements
     this.setBackground();
     this.createGrid();
     this.createPirateSelectionUI();
     this.createGoldUI();
     this.startGoldGeneration();
-     // Initialize pirate and crab groups with physics
-     this.crabs = new Map();
 
-     this.pirateSprites = this.physics.add.group();
-     this.piratesInstances = [];
-     this.physics.add.collider(this.pirateSprites, null, this.handleCollision, null, this);
-
-     this.piratebulletSprites = this.physics.add.group();
-     this.piratebulletsInstances=[];
-     this.physics.add.collider(this.piratebulletSprites, null, this.handlePirateBulletHit, null, this);
-
-     this.crabbulletSprites = this.physics.add.group();
-     this.crabbulletsInstances=[];
-     this.physics.add.collider(this.crabbulletSprites, null, this.handleCrabBulletHit, null, this);
-
-    this.currentWave = 'easy'; // Start with easy
-    //Start spawning crabs
+    // Start the game
+    this.currentWave = 'easy';
+    this.isSpawning = true; // Make sure spawning is enabled
     this.startWave();
-    // Add text or other game objects here (e.g. title)
-    this.add.text(20, 20, 'Pirates vs Crabs!', {
-      font: '24px Arial',
-      fill: '#ffffff'
-    });
   }
   update(time, delta) {
     // Call update on each crab object
@@ -144,11 +177,11 @@ export default class GameScene extends Phaser.Scene {
     const drawerBg = this.add.sprite(rightEdgeX, 360, "drawer");
     drawerBg.setScale(1.5);
 
-    // Create buttons with costs
-    this.createPirateButton(rightEdgeX, initialY, 'cannonPirate', this.pirateCosts.cannonPirate);
-    this.createPirateButton(rightEdgeX, initialY + buttonHeight + buttonMargin, 'harpoonPirate',this.pirateCosts.harpoonPirate);
-    this.createPirateButton(rightEdgeX, initialY + (buttonHeight + buttonMargin) * 2, 'hidingPirate',this.pirateCosts.hidingPirate);
-    this.createPirateButton(rightEdgeX, initialY + (buttonHeight + buttonMargin) * 3, 'barrel', this.pirateCosts.barrel);
+    // Only create buttons for available pirates
+    this.availablePirates.forEach((type, index) => {
+        const y = initialY + (buttonHeight + buttonMargin) * index;
+        this.createPirateButton(rightEdgeX, y, type, this.pirateCosts[type]);
+    });
   
   }
   createPirateButton(x, y, type, cost) {
@@ -156,7 +189,8 @@ export default class GameScene extends Phaser.Scene {
     button.setDisplaySize(90, 90);
 
     // Add cost text
-    const costText = this.add.text(x, y + 50, `${cost}`, {
+    this.add.image(x+15, y + 30, 'gold_coin').setScale(0.035);
+    const costText = this.add.text(x+35, y + 30, `${cost}`, {
         font: '16px Arial',
         fill: '#FFD700'
     });
@@ -216,7 +250,7 @@ export default class GameScene extends Phaser.Scene {
   }
   createGoldUI() {
     // Create gold icon
-    this.goldIcon = this.add.image(20, 60, 'gold_coin').setScale(0.5);
+    this.goldIcon = this.add.image(25, 60, 'gold_coin').setScale(0.07);
     
     // Create gold text
     this.goldText = this.add.text(50, 50, `Gold: ${this.gold}`, {
@@ -255,27 +289,34 @@ export default class GameScene extends Phaser.Scene {
 }
 
   startWave() {
+    // Remove any existing spawn event
+    if (this.spawnEvent) {
+        this.spawnEvent.remove();
+    }
+
+    // Create new spawn event
     this.spawnEvent = this.time.addEvent({
-      delay: 5000,
-      callback: () => {
-        if (this.isSpawning) {
-          const crabType = this.getCrabTypeForWave();
-          const y = Phaser.Math.RND.pick([150, 290, 420, 550]);
-          const x = 1100;
+        delay: 5000,
+        callback: () => {
+            if (this.isSpawning) {
+                const crabType = this.getCrabTypeForWave();
+                const y = Phaser.Math.RND.pick([150, 290, 420, 550]);
+                const x = 1100;
 
-          const crab = new Crab(this, x, y, crabType);
-          this.crabs.set(crab, crab.sprite);
+                const crab = new Crab(this, x, y, crabType);
+                this.crabs.set(crab, crab.sprite);
 
-          // Set up collision for this crab
-          this.physics.add.collider(this.pirateSprites, crab.sprite, this.handleCollision, null, this);
-          this.physics.add.collider(this.piratebulletSprites, crab.sprite, this.handlePirateBulletHit, null, this);
-        }
-      },
-      callbackScope: this,
-      loop: true
+                // Set up collision for this crab
+                this.physics.add.collider(this.pirateSprites, crab.sprite, this.handleCollision, null, this);
+                this.physics.add.collider(this.piratebulletSprites, crab.sprite, this.handlePirateBulletHit, null, this);
+            }
+        },
+        callbackScope: this,
+        loop: true
     });
-      // Start the timer to change wave
-      this.scheduleNextWave();
+
+    // Start the timer to change wave
+    this.scheduleNextWave();
   }
       
   getCrabTypeForWave() {
@@ -304,11 +345,11 @@ export default class GameScene extends Phaser.Scene {
   
           this.scheduleNextWave(); // Schedule next wave timer again
         } else {
-          console.log('All waves finished!'); 
-          // maybe trigger win condition or endless mode here
+          console.log('All waves finished!');
+          // Start checking for level completion
+          this.startLevelCompletionCheck();
         }
       }, [], this);
-  
     }, [], this);
   }
   
@@ -366,5 +407,135 @@ export default class GameScene extends Phaser.Scene {
   return null;
   }
 
+  // Add new method to check for level completion
+  startLevelCompletionCheck() {
+    // Create a repeating timer to check for level completion
+    this.levelCompletionTimer = this.time.addEvent({
+        delay: 1000, // Check every second
+        callback: this.checkLevelCompletion,
+        callbackScope: this,
+        loop: true
+    });
+  }
+
+  // Add new method to check if level is complete
+  checkLevelCompletion() {
+    // Check if all crabs are defeated
+    let allCrabsDefeated = true;
+    this.crabs.forEach((sprite, crab) => {
+        if (crab.isActive) {
+            allCrabsDefeated = false;
+        }
+    });
+
+    // If all crabs are defeated and all waves are finished
+    if (allCrabsDefeated && this.currentWaveIndex >= this.waveOrder.length) {
+        // Stop the completion check timer
+        if (this.levelCompletionTimer) {
+            this.levelCompletionTimer.remove();
+        }
+
+        // Stop all game processes
+        this.isSpawning = false;
+        if (this.spawnEvent) {
+            this.spawnEvent.remove();
+        }
+
+        // Stop all pirates
+        this.piratesInstances.forEach(pirate => {
+            if (pirate.isAlive) {
+                pirate.startAttack = false;
+            }
+        });
+
+        // Stop gold generation
+        if (this.goldGenerationEvent) {
+            this.goldGenerationEvent.remove();
+        }
+
+        // Unlock next level
+        this.unlockNextLevel();
+
+        // Start the level complete scene
+        this.scene.start('LevelCompleteScene', { level: this.currentLevel });
+    }
+  }
+
+  // Add new method to unlock next level
+  unlockNextLevel() {
+    const nextLevel = this.currentLevel + 1;
+    const unlockedLevels = JSON.parse(localStorage.getItem('unlockedLevels') || '[1]');
+    if (!unlockedLevels.includes(nextLevel)) {
+        unlockedLevels.push(nextLevel);
+        localStorage.setItem('unlockedLevels', JSON.stringify(unlockedLevels));
+    }
+  }
+
+  gameOver() {
+    // Stop all game processes
+    this.isSpawning = false;
+    if (this.spawnEvent) {
+        this.spawnEvent.remove();
+    }
+
+    // Stop all crabs
+    this.crabs.forEach((sprite, crab) => {
+        if (crab.isActive) {
+            crab.sprite.setVelocityX(0);
+        }
+    });
+
+    // Stop all pirates
+    this.piratesInstances.forEach(pirate => {
+        if (pirate.isAlive) {
+            pirate.startAttack = false;
+        }
+    });
+
+    // Stop gold generation
+    if (this.goldGenerationEvent) {
+        this.goldGenerationEvent.remove();
+    }
+
+    // Start game over scene
+    this.scene.start('GameOverScene', { level: this.currentLevel });
+  }
+
+  resetGameState() {
+    // Reset gold
+    this.gold = 500;
+    this.goldPerSecond = 5;
+    this.lastGoldUpdate = 0;
+
+    // Reset wave state
+    this.currentWave = 'easy';
+    this.isSpawning = true; // Make sure spawning is enabled
+    this.currentWaveIndex = 0;
+    
+    // Clear all game objects
+    this.crabs.clear();
+    this.piratesInstances = [];
+    this.piratebulletsInstances = [];
+    this.crabbulletsInstances = [];
+
+    // Reset timers
+    if (this.spawnEvent) {
+        this.spawnEvent.remove();
+    }
+    if (this.goldGenerationEvent) {
+        this.goldGenerationEvent.remove();
+    }
+    if (this.waveTimer) {
+        this.waveTimer.remove();
+    }
+
+    // Reset UI
+    if (this.goldText) {
+        this.goldText.destroy();
+    }
+    if (this.goldIcon) {
+        this.goldIcon.destroy();
+    }
+  }
 }
 

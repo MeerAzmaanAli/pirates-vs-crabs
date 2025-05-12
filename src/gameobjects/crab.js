@@ -72,6 +72,11 @@ export default class Crab {
         this.destroy();
     }
 
+    // Check if crab has reached the left side
+    if (this.sprite.x < 250) {
+        this.scene.gameOver();
+        return; // Stop further processing
+    }
   }
   tryAttack(time,bulltes,bulletGroup){
     

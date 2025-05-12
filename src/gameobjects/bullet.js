@@ -12,7 +12,6 @@ export default class Bullet {
       this.sprite.setVelocityX(velocity);
 
       this.isActive = true;
-      
   }
 
   update() {
@@ -21,11 +20,10 @@ export default class Bullet {
       this.destroy();
     }
   }
-
+  
   destroy() {
     this.isActive=false
     this.sprite.destroy();
-    
   }
 }
   
