@@ -1,4 +1,4 @@
-import Bullet from "./bullet";
+import Bullet from "./bullet.js";
 
 export default class Crab {
   constructor(scene, x, y, crabType = 'normal') {

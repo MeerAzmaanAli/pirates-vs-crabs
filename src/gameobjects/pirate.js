@@ -1,4 +1,4 @@
-import Bullet from "./bullet";
+import Bullet from "./bullet.js";
 
 class Pirate {
     constructor(scene, x, y, type = 'cannon') {

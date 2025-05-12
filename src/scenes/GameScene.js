@@ -1,6 +1,6 @@
 import * as Phaser from 'https://cdn.jsdelivr.net/npm/phaser@3.70.0/dist/phaser.esm.js';
-import Pirate from '../gameobjects/pirate';
-import Crab from '../gameobjects/crab';
+import Pirate from '../gameobjects/pirate.js';
+import Crab from '../gameobjects/crab.js';
 
 export default class GameScene extends Phaser.Scene {
     constructor() {
