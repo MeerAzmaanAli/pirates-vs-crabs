@@ -71,6 +71,12 @@ export default class GameScene extends Phaser.Scene {
             this.waveOrder = ['easy', 'medium', 'hard'];
             this.waveTimers = { easy: 20000, medium: 30000, hard: 30000 };
             break;
+        case 4:
+            this.availablePirates = ['harpoonPirate', 'hidingPirate', 'cannonPirate','barrel'];
+            this.availableCrabs = ['normal', 'armoured', 'octopus'];
+            this.waveOrder = ['easy', 'medium', 'hard'];
+            this.waveTimers = { easy: 20000, medium: 30000, hard: 40000 };
+            break;
     }
   }
 

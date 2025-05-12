@@ -9,7 +9,7 @@ export default class LevelSelectScene extends Phaser.Scene {
         this.add.image(0, 0, 'menu_bg').setOrigin(0, 0).setDisplaySize(1280, 720);
 
         // Add title
-        this.add.text(640, 100, 'SELECT LEVEL', {
+        this.add.text(640, 50, 'SELECT LEVEL', {
             font: '48px Arial',
             fill: '#ffffff',
             stroke: '#000000',
@@ -55,6 +55,12 @@ export default class LevelSelectScene extends Phaser.Scene {
                 description: 'All Crab Types\nAll Pirates',
                 waves: 3,
                 unlocked: unlockedLevels.includes(3)
+            },{
+                level: 4,
+                title: 'Level 4',
+                description: 'All Crab Types\nAlonger waves',
+                waves: 3,
+                unlocked: unlockedLevels.includes(4)
             }
         ];
 
@@ -65,7 +71,7 @@ export default class LevelSelectScene extends Phaser.Scene {
     }
 
     createLevelButton(config, y) {
-        const button = this.add.container(640, y);
+        const button = this.add.container(640, y-100);
     
         // Create button background with rounded corners
         const bgGraphics = this.add.graphics();
