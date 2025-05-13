@@ -20,6 +20,10 @@ export default class Crab {
     this.pirate=null;
     this.lastAttackTime=0;
     this.isActive = true;
+
+    // Add health bar
+    this.healthBar = this.createHealthBar();
+    this.updateHealthBar();
   }
   setPirateProperties() {
     switch (this.type) {
@@ -58,8 +62,13 @@ export default class Crab {
     }
   }
 
-  update(time,bulltes,bulletGroup) {
+  update(time, bulltes, bulletGroup) {
     if (!this.isActive) return;
+    
+    // Update health bar position to follow crab
+    if (this.healthBar) {
+        this.healthBar.container.setPosition(this.sprite.x, this.sprite.y - 50);
+    }
     
     // Check if pirate reference is still valid
     if (this.pirate && (!this.pirate.isAlive || this.pirate.health <= 0)) {
@@ -120,6 +129,7 @@ export default class Crab {
 
   takeDamage(amount) {
     this.health -= amount;
+    this.updateHealthBar();
   }
 
   destroy() {
@@ -130,6 +140,11 @@ export default class Crab {
     }
     this.sprite.destroy();
     this.isActive = false;
+
+    // Destroy health bar
+    if (this.healthBar) {
+        this.healthBar.container.destroy();
+    }
   }
   resetCrab(){
 
@@ -140,5 +155,49 @@ export default class Crab {
         this.sprite.setVelocityX(-this.speed);
     }
 
+  }
+
+  createHealthBar() {
+    const barWidth = 50;
+    const barHeight = 5;
+    const graphics = this.scene.add.graphics();
+    
+    // Create container for the health bar
+    const container = this.scene.add.container(this.sprite.x, this.sprite.y - 30);
+    container.add(graphics);
+    
+    return {
+        container: container,
+        graphics: graphics,
+        width: barWidth,
+        height: barHeight
+    };
+  }
+
+  updateHealthBar() {
+    const healthPercent = this.health / this.getMaxHealth();
+    const barWidth = this.healthBar.width * healthPercent;
+    
+    this.healthBar.graphics.clear();
+    
+    // Draw background (red)
+    this.healthBar.graphics.fillStyle(0xff0000, 0.5);
+    this.healthBar.graphics.fillRect(-this.healthBar.width/2, 0, this.healthBar.width, this.healthBar.height);
+    
+    // Draw health (green)
+    this.healthBar.graphics.fillStyle(0x00ff00, 0.5);
+    this.healthBar.graphics.fillRect(-this.healthBar.width/2, 0, barWidth, this.healthBar.height);
+    
+    // Update position to follow sprite
+    this.healthBar.container.setPosition(this.sprite.x, this.sprite.y - 30);
+  }
+
+  getMaxHealth() {
+    switch (this.type) {
+        case 'octopus': return 150;
+        case 'normal': return 100;
+        case 'armoured': return 200;
+        default: return 100;
+    }
   }
 }

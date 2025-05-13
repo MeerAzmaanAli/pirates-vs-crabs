@@ -54,12 +54,15 @@ export default class BootScene extends Phaser.Scene {
 
   loadGameAssets() {
     // Background
+    this.load.image('title', 'src/assets/images/title.png');
     this.load.image('deck', 'src/assets/images/deck.png');
     this.load.image('menu_bg', 'src/assets/images/menu_bg.png');
     this.load.image('gameOver_bg', 'src/assets/images/gameOver_bg.png');
     this.load.image('levelComplete_bg', 'src/assets/images/levelComplete_bg.png');
     this.load.image('grid', 'src/assets/images/grid.png');
-
+    this.load.image('bottle', 'src/assets/images/bottle.png');
+    this.load.image('level_bg', 'src/assets/images/level_bg.png');
+    this.load.image('selectLevel_bg', 'src/assets/images/selectLevel_bg.png');
     // Pirates
     this.load.image('cannonPirate', 'src/assets/images/cannonPirate.png');
     this.load.image('harpoonPirate', 'src/assets/images/harpoonPirate.png');

@@ -6,12 +6,13 @@ export default class LevelSelectScene extends Phaser.Scene {
 
     create() {
         // Add background
-        this.add.image(0, 0, 'menu_bg').setOrigin(0, 0).setDisplaySize(1280, 720);
+        this.add.image(0, 0, 'selectLevel_bg').setOrigin(0, 0).setDisplaySize(1280, 720);
 
         // Add title
-        this.add.text(640, 50, 'SELECT LEVEL', {
-            font: '48px Arial',
-            fill: '#ffffff',
+        this.add.text(640, 45, 'SELECT LEVEL', {
+            fontFamily: '"Permanent Marker"',
+            fontSize: '45px',
+            fill: '#e1a21f ',
             stroke: '#000000',
             strokeThickness: 4
         }).setOrigin(0.5);
@@ -23,9 +24,13 @@ export default class LevelSelectScene extends Phaser.Scene {
         this.createLevelButtons(unlockedLevels);
 
         // Add back button
-        const backButton = this.add.text(100, 50, '← Back', {
-            font: '24px Arial',
-            fill: '#ffffff'
+        this.add.image(80, 9, 'bottle').setOrigin(0, 0).setDisplaySize(170, 120);
+        const backButton = this.add.text(100, 50, '   Back', {
+            fontFamily: '"Permanent Marker"',
+            fontSize: '20px',
+            fill: '#3d6174 ',
+            stroke: '#000000',
+            strokeThickness: 2
         }).setInteractive();
 
         backButton.on('pointerdown', () => {
@@ -74,12 +79,7 @@ export default class LevelSelectScene extends Phaser.Scene {
         const button = this.add.container(640, y-100);
     
         // Create button background with rounded corners
-        const bgGraphics = this.add.graphics();
-        const defaultColor = 0xf4c542;
-        const hoverColor = 0xa0522d;
-    
-        bgGraphics.fillStyle(defaultColor, 1);
-        bgGraphics.fillRoundedRect(-200, -60, 400, 120, 20); // x, y, width, height, corner radius
+        const bgGraphics = this.add.image(0, 0, 'level_bg').setOrigin(0.5).setDisplaySize(400, 200);
         button.add(bgGraphics);
     
         // Create a hit area for interaction since Graphics doesn’t have one by default
@@ -90,30 +90,29 @@ export default class LevelSelectScene extends Phaser.Scene {
     
         // Add level title
         const title = this.add.text(0, -30, config.title, {
-            font: '24px Arial',
-            fill: '#ffffff'
+            fontFamily: '"Permanent Marker"',
+            fontSize: '24px',
+            fill: '#3d6174'
         }).setOrigin(0.5);
         button.add(title);
     
         // Add level description
         const desc = this.add.text(0, 10, config.description, {
-            font: '16px Arial',
-            fill: '#ffffff',
-            align: 'center'
+            fontFamily: '"Permanent Marker"',
+            fontSize: '16px',
+            fill: '#3d6174'
         }).setOrigin(0.5);
         button.add(desc);
     
         if (config.unlocked) {
             hitArea.on('pointerover', () => {
-                bgGraphics.clear();
-                bgGraphics.fillStyle(hoverColor, 1);
-                bgGraphics.fillRoundedRect(-200, -60, 400, 120, 20);
+                title.setStyle({ fill: '#c33e2f' });
+                desc.setStyle({ fill: '#c33e2f' });
             });
     
             hitArea.on('pointerout', () => {
-                bgGraphics.clear();
-                bgGraphics.fillStyle(defaultColor, 1);
-                bgGraphics.fillRoundedRect(-200, -60, 400, 120, 20);
+                title.setStyle({ fill: '#3d6174' });
+                desc.setStyle({ fill: '#3d6174' });
             });
     
             hitArea.on('pointerdown', () => {

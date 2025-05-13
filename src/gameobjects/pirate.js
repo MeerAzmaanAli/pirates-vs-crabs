@@ -24,6 +24,10 @@ class Pirate {
       this.crabsInContact =[];
       this.crabIndex=0;
       this.lastAttackTime = 0; // Track attack timing for shooting
+
+      // Add health bar
+      this.healthBar = this.createHealthBar();
+      this.updateHealthBar();
     }
   
     // Set different properties based on pirate type
@@ -64,12 +68,18 @@ class Pirate {
           break;
       }
     }
-    update(time,bulltes,bulletGroup,pirateSprites,pirateInstances){
-      if(!this.isAlive)return;
-      this.tryAttack(time,bulltes,bulletGroup);
-      if (this.health <= 0) {
-        this.destroy(pirateInstances);
-      }
+    update(time, bulltes, bulletGroup, pirateSprites, pirateInstances) {
+        if (!this.isAlive) return;
+        
+        // Update health bar position to follow pirate
+        if (this.healthBar) {
+            this.healthBar.container.setPosition(this.sprite.x, this.sprite.y - 50);
+        }
+        
+        this.tryAttack(time, bulltes, bulletGroup);
+        if (this.health <= 0) {
+            this.destroy(pirateInstances);
+        }
     }
 
     tryAttack(time,bulltes,bulletGroup){
@@ -148,6 +158,7 @@ class Pirate {
         return;
       }
       this.health -= amount;
+      this.updateHealthBar();
     }
     // Destroy pirate
     destroy(pirateInstances) {
@@ -170,6 +181,56 @@ class Pirate {
       if (index !== -1) {
           this.scene.piratesInstances.splice(index, 1);
       }
+
+      // Destroy health bar
+      if (this.healthBar) {
+          this.healthBar.container.destroy();
+      }
+    }
+
+    createHealthBar() {
+        const barWidth = 50;
+        const barHeight = 5;
+        const graphics = this.scene.add.graphics();
+        
+        // Create container for the health bar
+        const container = this.scene.add.container(this.sprite.x, this.sprite.y - 30);
+        container.add(graphics);
+        
+        return {
+            container: container,
+            graphics: graphics,
+            width: barWidth,
+            height: barHeight
+        };
+    }
+
+    updateHealthBar() {
+        const healthPercent = this.health / this.getMaxHealth();
+        const barWidth = this.healthBar.width * healthPercent;
+        
+        this.healthBar.graphics.clear();
+        
+        // Draw background (red)
+        this.healthBar.graphics.fillStyle(0xff0000, 0.5);
+        this.healthBar.graphics.fillRect(-this.healthBar.width/2, 0, this.healthBar.width, this.healthBar.height);
+        
+        // Draw health (green)
+        this.healthBar.graphics.fillStyle(0x00ff00, 0.5);
+        this.healthBar.graphics.fillRect(-this.healthBar.width/2, 0, barWidth, this.healthBar.height);
+        
+        // Update position to follow sprite
+        this.healthBar.container.setPosition(this.sprite.x, this.sprite.y - 30);
+    }
+
+    getMaxHealth() {
+        switch (this.type) {
+            case 'cannonPirate': return 300;
+            case 'harpoonPirate': return 200;
+            case 'hidingPirate': return 275;
+            case 'barrel': return 400;
+            default: return 200;
+        }
     }
   }
   

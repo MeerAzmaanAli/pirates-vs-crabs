@@ -6,7 +6,7 @@ export default class GameScene extends Phaser.Scene {
     constructor() {
         super({ key: 'GameScene' });
         this.selectedPirate = null;
-        this.gold = 500; // Starting gold
+
         this.goldPerSecond = 5; // Gold generation rate
         this.lastGoldUpdate = 0;
         this.goldUpdateInterval = 1000; // Update every second
@@ -43,11 +43,12 @@ export default class GameScene extends Phaser.Scene {
     this.piratebulletsInstances = [];
     this.crabbulletsInstances = [];
     
+    
+        // Reset game state 
+    this.resetGameState();
     // Set level configuration
     this.setLevelConfig();
 
-    // Reset game state 
-    this.resetGameState();
   }
 
   setLevelConfig() {
@@ -57,24 +58,28 @@ export default class GameScene extends Phaser.Scene {
             this.availablePirates = ['harpoonPirate'];
             this.availableCrabs = ['normal'];
             this.waveOrder = ['easy'];
+            this.gold=150;
             this.waveTimers = { easy: 30000 };
             break;
         case 2:
             this.availablePirates = ['harpoonPirate', 'hidingPirate'];
             this.availableCrabs = ['normal', 'armoured'];
             this.waveOrder = ['easy', 'medium'];
+            this.gold=300;
             this.waveTimers = { easy: 30000, medium: 30000 };
             break;
         case 3:
             this.availablePirates = ['harpoonPirate', 'hidingPirate', 'cannonPirate'];
             this.availableCrabs = ['normal', 'armoured', 'octopus'];
             this.waveOrder = ['easy', 'medium', 'hard'];
+            this.gold=400;
             this.waveTimers = { easy: 20000, medium: 30000, hard: 30000 };
             break;
         case 4:
             this.availablePirates = ['harpoonPirate', 'hidingPirate', 'cannonPirate','barrel'];
             this.availableCrabs = ['normal', 'armoured', 'octopus'];
             this.waveOrder = ['easy', 'medium', 'hard'];
+            this.gold=500;
             this.waveTimers = { easy: 20000, medium: 30000, hard: 40000 };
             break;
     }
@@ -511,7 +516,7 @@ export default class GameScene extends Phaser.Scene {
 
   resetGameState() {
     // Reset gold
-    this.gold = 500;
+    this.gold = 0;
     this.goldPerSecond = 5;
     this.lastGoldUpdate = 0;
 
