@@ -1,5 +1,3 @@
-import * as Phaser from 'https://cdn.jsdelivr.net/npm/phaser@3.70.0/dist/phaser.esm.js';
-
 const UI = {
     bottleButton(scene, x, y, text, sceneToStart) {
         const button = scene.add.image(x+20, y+10, 'bottle').setOrigin(0.5).setDisplaySize(250, 150);
