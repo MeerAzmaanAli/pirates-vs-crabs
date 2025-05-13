@@ -1,4 +1,5 @@
 import * as Phaser from 'https://cdn.jsdelivr.net/npm/phaser@3.70.0/dist/phaser.esm.js';
+import UI from '../utils/ui';
 export default class LevelCompleteScene extends Phaser.Scene {
     constructor() {
         super({ key: 'LevelCompleteScene' });
@@ -15,34 +16,24 @@ export default class LevelCompleteScene extends Phaser.Scene {
         
         // Create level complete text
         const completeText = this.add.text(640, 250, 'LEVEL COMPLETE!', {
-            font: '48px Arial',
-            fill: '#ffffff',
+            fontFamily: '"Permanent Marker"',
+            fontSize: '36px',
+            fill: '#e1a21f ',
             stroke: '#000000',
-            strokeThickness: 4
+            strokeThickness: 3
         }).setOrigin(0.5);
 
         // Create level number text
         const levelText = this.add.text(640, 320, `Level ${this.level}`, {
-            font: '36px Arial',
-            fill: '#ffffff',
+            fontFamily: '"Permanent Marker"',
+            fontSize: '36px',
+            fill: '#e1a21f ',
             stroke: '#000000',
             strokeThickness: 3
         }).setOrigin(0.5);
 
         // Create continue button
-        const continueButton = this.add.text(640, 400, 'Continue', {
-            font: '32px Arial',
-            fill: '#ffffff',
-            backgroundColor: '#4a4a4a',
-            padding: { x: 20, y: 10 }
-        })
-        .setOrigin(0.5)
-        .setInteractive()
-        .on('pointerover', () => continueButton.setStyle({ fill: '#ffff00' }))
-        .on('pointerout', () => continueButton.setStyle({ fill: '#ffffff' }))
-        .on('pointerdown', () => {
-            this.scene.start('LevelSelectScene');
-        });
+        UI.bottleButton(this, 660, 410, 'Next', 'LevelSelectScene');
 
         // Add some visual effects
         this.addCompletionEffects();

@@ -1,4 +1,5 @@
 import * as Phaser from 'https://cdn.jsdelivr.net/npm/phaser@3.70.0/dist/phaser.esm.js';
+import UI from '../utils/ui';
 export default class GameOverScene extends Phaser.Scene {
     constructor() {
         super({ key: 'GameOverScene' });
@@ -28,31 +29,11 @@ export default class GameOverScene extends Phaser.Scene {
         }).setOrigin(0.5);
 
         // Create retry button
-        const retryButton = this.add.text(640, 400, 'RETRY', {
-            font: '32px Arial',
-            fill: '#ffffff',
-            backgroundColor: '#1a65ac',
-            padding: { x: 20, y: 10 }
-        }).setOrigin(0.5).setInteractive();
+        const retryButton= UI.bottleButton(this, 640, 400, 'R E T R Y');
+        
 
         // Create menu button
-        const menuButton = this.add.text(640, 480, 'MAIN MENU', {
-            font: '32px Arial',
-            fill: '#ffffff',
-            backgroundColor: '#1a65ac',
-            padding: { x: 20, y: 10 }
-        }).setOrigin(0.5).setInteractive();
-
-        // Button hover effects
-        [retryButton, menuButton].forEach(button => {
-            button.on('pointerover', () => {
-                button.setStyle({ fill: '#ff0' });
-            });
-
-            button.on('pointerout', () => {
-                button.setStyle({ fill: '#ffffff' });
-            });
-        });
+        UI.bottleButton(this, 640, 500, 'M E N U', 'MainMenuScene');
 
         // Button actions
         retryButton.on('pointerdown', () => {
@@ -64,10 +45,6 @@ export default class GameOverScene extends Phaser.Scene {
                 level: this.currentLevel,
                 reset: true
             });
-        });
-
-        menuButton.on('pointerdown', () => {
-            this.scene.start('MainMenuScene');
         });
     }
 

@@ -1,4 +1,5 @@
 import * as Phaser from 'https://cdn.jsdelivr.net/npm/phaser@3.70.0/dist/phaser.esm.js';
+import UI from '../utils/ui';
 export default class LevelSelectScene extends Phaser.Scene {
     constructor() {
         super({ key: 'LevelSelectScene' });
@@ -24,18 +25,7 @@ export default class LevelSelectScene extends Phaser.Scene {
         this.createLevelButtons(unlockedLevels);
 
         // Add back button
-        this.add.image(80, 9, 'bottle').setOrigin(0, 0).setDisplaySize(170, 120);
-        const backButton = this.add.text(100, 50, '   Back', {
-            fontFamily: '"Permanent Marker"',
-            fontSize: '20px',
-            fill: '#3d6174 ',
-            stroke: '#000000',
-            strokeThickness: 2
-        }).setInteractive();
-
-        backButton.on('pointerdown', () => {
-            this.scene.start('MainMenuScene');
-        });
+        UI.bottleButton(this, 150, 50, 'B A C K', 'MainMenuScene');
     }
 
     createLevelButtons(unlockedLevels) {
