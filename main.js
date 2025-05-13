@@ -21,7 +21,7 @@ const config = {
   physics: {
     default: 'arcade',
     arcade: {
-      debug: true, // optional, helps visualize collisions
+      debug: false, // optional, helps visualize collisions
       gravity: { y: 0 }
     }
   },
