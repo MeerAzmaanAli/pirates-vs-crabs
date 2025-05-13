@@ -1,5 +1,5 @@
 import * as Phaser from 'https://cdn.jsdelivr.net/npm/phaser@3.70.0/dist/phaser.esm.js';
-import UI from '../utils/ui';
+import UI from '../utils/ui.js';
 export default class LevelSelectScene extends Phaser.Scene {
     constructor() {
         super({ key: 'LevelSelectScene' });
