@@ -162,11 +162,12 @@ export default class GameScene extends Phaser.Scene {
             console.log("No pirate selected!");
             return;
           }  
-          console.log(button.x," ",button.y);
-          this.placePirate(x, y);
+          const success = this.placePirate(x, y);
+          if (success) {
+            button.off('pointerdown');
+            button.setInteractive(false);
+          }
 
-          button.off('pointerdown');
-          button.setInteractive(false);
         });
       }
     }
@@ -233,14 +234,14 @@ export default class GameScene extends Phaser.Scene {
 
     if (!this.selectedPirate) {
       console.log("No pirate selected!");
-      return;
+      return false;
   }
 
   const cost = this.pirateCosts[this.selectedPirate];
   if (this.gold < cost) {
       // Show "not enough gold" message
       this.showNotEnoughGoldMessage();
-      return;
+      return false;
   }
 
   // Deduct gold
@@ -253,6 +254,7 @@ export default class GameScene extends Phaser.Scene {
 
   this.physics.add.collider(this.crabbulletSprites, pirate.sprite, this.handleCrabBulletHit, null, this);
   pirate.sprite.setImmovable(true);
+  return true;
   }
   createGoldUI() {
     // Create gold icon
