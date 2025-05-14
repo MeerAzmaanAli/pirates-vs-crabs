@@ -46,7 +46,20 @@ export default class GameOverScene extends Phaser.Scene {
                 reset: true
             });
         });
+        this.Music = this.sound.add('gameOverBgm', {
+            volume: 0.5,
+            loop: true
+        });
+        this.Music.play();
+        this.events.on('shutdown', this.shutdown, this);
     }
+    shutdown() {
+        // Stop the music when leaving the scene
+        if (this.Music) {
+            this.Music.stop();
+        }
+    }
+
 
     resetGameState() {
         // Clear any existing game data from localStorage

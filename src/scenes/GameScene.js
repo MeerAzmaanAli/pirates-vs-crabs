@@ -107,7 +107,21 @@ export default class GameScene extends Phaser.Scene {
     this.currentWave = 'easy';
     this.isSpawning = true; // Make sure spawning is enabled
     this.startWave();
+
+     // Play background music
+    this.gameMusic = this.sound.add('gameBgm', {
+      volume: 0.5,
+      loop: true
+    });
+    this.gameMusic.play();
+    this.events.on('shutdown', this.shutdown, this);
   }
+  shutdown() {
+    // Stop the music when leaving the scene
+    if (this.gameMusic) {
+        this.gameMusic.stop();
+    }
+}
   update(time, delta) {
     // Call update on each crab object
     this.crabs.forEach((sprite, crab) => {
@@ -126,12 +140,8 @@ export default class GameScene extends Phaser.Scene {
 
   setBackground(){
     //Add background image and scale it to fit screen
-    const bg = this.add.image(0, 0, 'deck').setOrigin(0, 0);
-    const scaleX = this.sys.game.config.width / bg.width;
-    const scaleY = this.sys.game.config.height / bg.height;
-    const scale = Math.min(scaleX, scaleY);
-    bg.setScale(scale);
-    bg.setOrigin(0, 0);
+    const bg = this.add.image(0, 0, 'deck').setOrigin(0, 0).setDisplaySize(1280, 720);
+
   }
 
   createGrid(){

@@ -37,8 +37,20 @@ export default class LevelCompleteScene extends Phaser.Scene {
 
         // Add some visual effects
         this.addCompletionEffects();
-    }
 
+        this.Music = this.sound.add('winnerBgm', {
+            volume: 0.5,
+            loop: true
+        });
+        this.Music.play();
+        this.events.on('shutdown', this.shutdown, this);
+    }
+    shutdown() {
+        // Stop the music when leaving the scene
+        if (this.Music) {
+            this.Music.stop();
+        }
+    }
     addCompletionEffects() {
         // Add some particle effects or animations here
         // For example, you could add confetti or sparkles

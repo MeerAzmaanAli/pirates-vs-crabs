@@ -63,6 +63,8 @@ export default class BootScene extends Phaser.Scene {
     this.load.image('bottle', 'src/assets/images/bottle.png');
     this.load.image('level_bg', 'src/assets/images/level_bg.png');
     this.load.image('selectLevel_bg', 'src/assets/images/selectLevel_bg.png');
+    this.load.image('logoMeer', 'src/assets/images/logoMeer.png');
+    this.load.image('meerPirate', 'src/assets/images/meerPirate.png');
     // Pirates
     this.load.image('cannonPirate', 'src/assets/images/cannonPirate.png');
     this.load.image('harpoonPirate', 'src/assets/images/harpoonPirate.png');
@@ -82,6 +84,12 @@ export default class BootScene extends Phaser.Scene {
     // Bullets
     this.load.image('cannonBall', 'src/assets/images/cannonBall.png');
     this.load.image('octoBullet', 'src/assets/images/octoBullet.png');
+
+    this.load.audio('menuBgm', 'src/assets/sounds/menuBgm.mp3');
+    this.load.audio('gameBgm', 'src/assets/sounds/gameBgm.mp3');
+    this.load.audio('gameOverBgm', 'src/assets/sounds/gameoverBgm.mp3');
+    this.load.audio('winnerBgm', 'src/assets/sounds/winnerBgm.mp3');
+    this.load.audio('levelSelectBgm', 'src/assets/sounds/levelSelectBgm.mp3');
 
     // Add error handling
     this.load.on('loaderror', (file) => {

@@ -13,7 +13,7 @@ const config = {
   width: 1280, // your virtual resolution
   height: 720,
   scale: {
-      mode: Phaser.Scale.FIT, // maintains aspect ratio
+      mode: Phaser.Scale.FILL, // maintains aspect ratio
       autoCenter: Phaser.Scale.CENTER_BOTH // centers on screen
   },
   parent: 'game', // attach to the <div id="game">

@@ -26,6 +26,19 @@ export default class LevelSelectScene extends Phaser.Scene {
 
         // Add back button
         UI.bottleButton(this, 150, 50, 'B A C K', 'MainMenuScene');
+        
+        this.Music = this.sound.add('levelSelectBgm', {
+            volume: 0.5,
+            loop: true
+        });
+        this.Music.play();
+        this.events.on('shutdown', this.shutdown, this);
+    }
+    shutdown() {
+        // Stop the music when leaving the scene
+        if (this.Music) {
+            this.Music.stop();
+        }
     }
 
     createLevelButtons(unlockedLevels) {
