@@ -108,6 +108,7 @@ export default class Crab {
   }
   shoot(bulltes,bulletGroup) {
     const bullet = new Bullet(this.scene, this.sprite.x-50, this.sprite.y, 'octoBullet',bulltes,bulletGroup,-200);
+    this.scene.sound.add('octoShoot_Sfx').play();
     console.log('shoooot');
   }
   normalAttack(){
