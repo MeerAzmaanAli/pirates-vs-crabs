@@ -106,6 +106,7 @@ class Pirate {
     // Shooting logic
     shoot(bulltes,bulletGroup) {
       const bullet = new Bullet(this.scene, this.sprite.x + 70, this.sprite.y, 'cannonBall',bulltes,bulletGroup,200);
+      this.scene.sound.add('cannonShoot_Sfx').play();
       console.log('shoooot');
     }
 
@@ -175,6 +176,7 @@ class Pirate {
       
       // Remove from physics group
       this.sprite.destroy();
+      this.scene.add.image(this.sprite.x, this.sprite.y+15, 'grave').setScale(0.07);
       
       // Remove from piratesInstances array
       const index = this.scene.piratesInstances.indexOf(this);

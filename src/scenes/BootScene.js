@@ -70,6 +70,7 @@ export default class BootScene extends Phaser.Scene {
     this.load.image('harpoonPirate', 'src/assets/images/harpoonPirate.png');
     this.load.image('hidingPirate', 'src/assets/images/HidenPirate.png');
     this.load.image('barrel', 'src/assets/images/barrel.png');
+    this.load.image('grave', 'src/assets/images/grave.png');
 
     // Crabs
     this.load.image('normalCrab', 'src/assets/images/normal crab.png');
@@ -90,6 +91,8 @@ export default class BootScene extends Phaser.Scene {
     this.load.audio('gameOverBgm', 'src/assets/sounds/gameoverBgm.mp3');
     this.load.audio('winnerBgm', 'src/assets/sounds/winnerBgm.mp3');
     this.load.audio('levelSelectBgm', 'src/assets/sounds/levelSelectBgm.mp3');
+
+    this.load.audio('cannonShoot_Sfx', 'src/assets/sounds/cannonShoot_Sfx.mp3');
 
     // Add error handling
     this.load.on('loaderror', (file) => {
