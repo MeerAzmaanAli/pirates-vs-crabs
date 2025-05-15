@@ -33,7 +33,7 @@ export default class LevelCompleteScene extends Phaser.Scene {
         }).setOrigin(0.5);
 
         // Create continue button
-        UI.bottleButton(this, 660, 410, 'Next', 'LevelSelectScene');
+        UI.bottleButton(this, 660, 410, 'N e x t', 'LevelSelectScene');
 
         // Add some visual effects
         this.addCompletionEffects();

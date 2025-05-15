@@ -16,15 +16,19 @@ export default class GameOverScene extends Phaser.Scene {
 
         // Game Over text
         this.add.text(640, 200, 'GAME OVER', {
-            font: '64px Arial',
-            fill: '#ff0000',
+            fontFamily: '"Permanent Marker"',
+            fontSize: '64px',
             stroke: '#000000',
-            strokeThickness: 6
+            strokeThickness: 6,
+            fill: '#c33e2f'
         }).setOrigin(0.5);
 
         // Level info
         this.add.text(640, 300, `Level ${this.currentLevel} Failed`, {
-            font: '32px Arial',
+            fontFamily: '"Permanent Marker"',
+            fontSize: '32px',
+            stroke: '#000000',
+            strokeThickness: 3,
             fill: '#ffffff'
         }).setOrigin(0.5);
 

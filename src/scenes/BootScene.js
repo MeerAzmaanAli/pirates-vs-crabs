@@ -105,10 +105,5 @@ export default class BootScene extends Phaser.Scene {
     // Start with MainMenuScene instead of GameScene
     this.scene.start('MainMenuScene');
     
-    this.events.on('pointerdown', () => {
-      if (!this.scale.isFullscreen) {
-        this.scale.startFullscreen();
-      }
-    });
   }
 }
