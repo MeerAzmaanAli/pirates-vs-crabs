@@ -12,8 +12,12 @@ export default class MainMenuScene extends Phaser.Scene {
         // Add title
         this.add.image(640, 300, 'title').setOrigin(0, 0).setOrigin(0.5).setDisplaySize(500,500);
 
-        UI.bottleButton(this, 630, 550, 'P l a y', 'LevelSelectScene');
-
+        const button =UI.bottleButton(this, 630, 550, 'P l a y', 'LevelSelectScene');
+        button.on('pointerdown', () => {
+            if (!this.scale.isFullscreen) {
+               
+              }
+        });
          // Play background music
          this.menuMusic = this.sound.add('menuBgm', {
             volume: 0.5,

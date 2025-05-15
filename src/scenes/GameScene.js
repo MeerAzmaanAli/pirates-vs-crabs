@@ -101,17 +101,18 @@ export default class GameScene extends Phaser.Scene {
     this.createGrid();
     this.createPirateSelectionUI();
     this.createGoldUI();
+    this.createWaveProgressBar();
     this.startGoldGeneration();
 
     // Start the game
     this.currentWave = 'easy';
-    this.isSpawning = true; // Make sure spawning is enabled
+    this.isSpawning = true;
     this.startWave();
 
-     // Play background music
+    // Play background music
     this.gameMusic = this.sound.add('gameBgm', {
-      volume: 0.5,
-      loop: true
+        volume: 0.5,
+        loop: true
     });
     this.gameMusic.play();
     this.events.on('shutdown', this.shutdown, this);
@@ -123,6 +124,15 @@ export default class GameScene extends Phaser.Scene {
     }
 }
   update(time, delta) {
+    // Update wave progress bar
+    if (this.waveBar && this.isSpawning) {
+        const elapsed = time - this.waveStartTime;
+        const progress = Math.max(0, Math.min(elapsed / this.waveDuration, 1));
+        this.waveBar.clear();
+        this.waveBar.fillStyle(0x00ff00, 1);
+        this.waveBar.fillRect(300, 50, 100 * progress, 10);
+    }
+
     // Call update on each crab object
     this.crabs.forEach((sprite, crab) => {
       crab.update(time,this.crabbulletsInstances,this.crabbulletSprites);
@@ -356,23 +366,29 @@ export default class GameScene extends Phaser.Scene {
     const currentWaveTime = this.waveTimers[this.currentWave];
   
     this.time.delayedCall(currentWaveTime, () => {
-      this.isSpawning = false; // Stop crab spawning for break
+        this.isSpawning = false; // Stop crab spawning for break
+        this.waveBar.clear(); // Clear the progress bar during break
   
-      // Small pause between waves (example: 5 sec break)
-      this.time.delayedCall(5000, () => {
-        // Move to next wave
-        this.currentWaveIndex++;
-        if (this.currentWaveIndex < this.waveOrder.length) {
-          this.currentWave = this.waveOrder[this.currentWaveIndex];
-          this.isSpawning = true;
-  
-          this.scheduleNextWave(); // Schedule next wave timer again
-        } else {
-          console.log('All waves finished!');
-          // Start checking for level completion
-          this.startLevelCompletionCheck();
-        }
-      }, [], this);
+        // Small pause between waves (example: 5 sec break)
+        this.time.delayedCall(5000, () => {
+            // Move to next wave
+            this.currentWaveIndex++;
+            if (this.currentWaveIndex < this.waveOrder.length) {
+                this.currentWave = this.waveOrder[this.currentWaveIndex];
+                this.isSpawning = true;
+                
+                // Update wave text and reset progress bar
+                this.waveText.setText(`Wave: ${this.currentWave.charAt(0).toUpperCase() + this.currentWave.slice(1)}`);
+                this.waveStartTime = this.time.now + 5000;
+                this.waveDuration = this.waveTimers[this.currentWave];
+                
+                this.scheduleNextWave(); // Schedule next wave timer again
+            } else {
+                console.log('All waves finished!');
+                // Start checking for level completion
+                this.startLevelCompletionCheck();
+            }
+        }, [], this);
     }, [], this);
   }
   
@@ -559,6 +575,38 @@ export default class GameScene extends Phaser.Scene {
     if (this.goldIcon) {
         this.goldIcon.destroy();
     }
+
+    // Reset wave progress bar
+    if (this.waveBar) {
+        this.waveBar.clear();
+    }
+    if (this.waveText) {
+        this.waveText.setText('Wave: Easy');
+    }
+    this.waveStartTime = this.time.now+5000;
+    this.waveDuration = this.waveTimers[this.currentWave];
+  }
+
+  createWaveProgressBar() {
+    // Create background bar
+    this.waveBarBg = this.add.graphics();
+    this.waveBarBg.fillStyle(0x000000, 0.5);
+    this.waveBarBg.fillRect(1100, 50, 100, 10);
+
+    // Create progress bar
+    this.waveBar = this.add.graphics();
+    this.waveBar.fillStyle(0x00ff00, 1);
+    this.waveBar.fillRect(1100, 50, 0, 10);
+
+    // Add wave text
+    this.waveText = this.add.text(640, 30, 'Wave: Easy', {
+        font: '20px Arial',
+        fill: '#ffffff'
+    }).setOrigin(0.5);
+
+    // Initialize wave timer with the same delay as the wave start
+    this.waveStartTime = this.time.now + 5000;
+    this.waveDuration = this.waveTimers[this.currentWave];
   }
 }
 
